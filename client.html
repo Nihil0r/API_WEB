@@ -30,6 +30,7 @@
     <h2>Annotations</h2>
     <pre id="annotations-output"></pre>
     <button id="refresh-annotations">Actualiser les annotations</button>
+    <button id="clear-annotations">Effacer les annotations</button>
 
     <script>
         // Élément DOM pour afficher les annotations
@@ -39,7 +40,11 @@
         async function displayAnnotations() {
             const response = await fetch('/annotations');
             const annotations = await response.json();
-            annotationsOutput.textContent = JSON.stringify(annotations, null, 2);
+            annotations.forEach(annotation => {
+                const pre = document.createElement('pre');
+                pre.textContent = JSON.stringify(annotation, null, 2);
+                annotationsOutput.appendChild(pre);
+            });
         }
 
         // Actualiser les annotations lors du chargement de la page
@@ -68,6 +73,13 @@
         // Bouton pour actualiser les annotations
         const refreshAnnotationsButton = document.getElementById('refresh-annotations');
         refreshAnnotationsButton.addEventListener('click', displayAnnotations);
+
+        // Bouton pour effacer les annotations
+        const clearAnnotationsButton = document.getElementById('clear-annotations');
+        clearAnnotationsButton.addEventListener('click', () => {
+            annotationsOutput.innerHTML = '';
+        });
+        
     </script>
 </body>
 </html>
