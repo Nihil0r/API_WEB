@@ -14,33 +14,37 @@ app.use(bodyParser.json());
 
 // Route pour récupérer la liste d'annotations
 app.get('/annotations', (req, res) => {
-  res.json(annotations);
+    res.json(annotations);
 });
 
 // Route pour créer une nouvelle annotation
 app.post('/annotations', (req, res) => {
-  // Générer une nouvelle uri unique
-  const uri = uuid.v4();
 
-  // Récupérer les données du formulaire
-  const title = req.body.title;
-  const content = req.body.content;
-  const format = req.body.format;
+    // Générer une nouvelle uri unique
+    const uri = uuid.v4();
 
-  // Créer une nouvelle annotation
-  const annotation = {
-    uri,
-    title,
-    content,
-    format,
-    created_at: new Date()
-  };
+    // Récupérer les données du formulaire
+    const title = req.body.title;
+    const content = req.body.content;
+    const format = req.body.format;
 
-  // Ajouter l'annotation à la liste
-  annotations.push(annotation);
+    // Créer une nouvelle annotation
+    const annotation = {
+        uri,
+        title,
+        content,
+        format,
+        created_at: new Date()
+    };
 
-  // Retourner la nouvelle annotation
-  res.json(annotation);
+    // Ajouter l'annotation à la liste
+    annotations.push(annotation);
+
+    // Afficher la liste des annotations
+    console.log("Annotations :", annotations);
+
+    // Retourner la nouvelle annotation
+    res.json(annotation);
 });
 
 
