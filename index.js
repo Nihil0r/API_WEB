@@ -53,6 +53,17 @@ app.get('/', (req, res) => {
     res.sendFile(__dirname + '/client.html');
 });
 
+// Route pour récupérer une annotation spécifique
+app.get('/annotations/:uri', (req, res) => {
+    const uri = req.params.uri;
+    const annotation = annotations.find(a => a.uri === uri);
+    if (annotation) {
+        res.json(annotation);
+    } else {
+        res.status(404).send("Annotation introuvable");
+    }
+});
+
 // Lancement du serveur
 app.listen(port, () => {
   console.log(`Serveur démarré sur le port ${port}`);
