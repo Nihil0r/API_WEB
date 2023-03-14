@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Formulaire d'annotations</title>
+    <!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="C:/Users/brice/OneDrive/Bureau/MIASHS/M1/S2/web/API_WEB/bootstrap-5.0.2-dist/css/bootstrap.min.css">
+    <script src="C:/Users/brice/OneDrive/Bureau/MIASHS/M1/S2/web/API_WEB/bootstrap-5.0.2-dist/js/bootstrap.min.js"></script> -->
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="bootstrap-5.0.2-dist/css/bootstrap.min.css">
+    <script src="bootstrap-5.0.2-dist/js/bootstrap.min.js"></script>
+
+    <style>
+      body {
+        margin: 20px;
+      }
+      
+      form {
+        margin-left: 20px;
+        margin-right: 970px;
+      }
+      
+      .form-group {
+        margin-bottom: 20px;
+      }
+    </style>
+
+  </head>
+  <body>
+    <h1>Créer une nouvelle annotation</h1>
+    
+    <form class="my-4" id="myForm">
+      <div class="form-group">
+        <label for="title">Titre :</label>
+        <input type="text" class="form-control" id="title" name="title"><br><br>
+      </div>
+      
+      <div class="form-group">
+        <label for="content">Contenu :</label>
+        <textarea class="form-control" id="content" name="content"></textarea><br><br>
+      </div>
+      
+      <div class="form-group">
+        <label for="format">Format :</label>
+        <select class="form-control" id="format" name="format">
+          <option value="text">Texte brut</option>
+          <option value="html">HTML</option>
+          <option value="markdown">Markdown</option>
+          <option value="json">JSON</option>
+        </select><br><br>
+      </div>
+        
+      <button type="submit" class="btn btn-primary">Créer</button>
+    </form>
+  </body>
+  
+</html>
