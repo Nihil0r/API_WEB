@@ -41,13 +41,17 @@ app.get('/resources/:resourceURI/annotations', (req, res) => {
 
 // Route pour récupérer toutes les annotations de notre serveur
 app.get('/annotations', (req, res) => {
-    res.json(Object.values(annotations));
+    const annotationsArray = Object.entries(annotations).map(([annotationURI, annotation]) => {
+        return { annotationURI, ...annotation };
+    });
+    res.json(annotationsArray);
 });
+  
 
 // Fonction pour importer des annotations d'un serveur tiers
 async function importAnnotationsFromThirdPartyServer(serverURL) {
-  // Utiliser "fetch" ou une autre bibliothèque pour récupérer les données à partir de serverURL
-  // Ajouter les annotations importées à notre objet "annotations"
+    // Utiliser "fetch" ou une autre bibliothèque pour récupérer les données à partir de serverURL
+    // Ajouter les annotations importées à notre objet "annotations"
 }
 
 // Lignes pour servir le fichier client.html à la racine
