@@ -16,9 +16,13 @@ app.post('/annotations', (req, res) => {
     if (!annotationURI || !resourceURI || !content || !format) {
         return res.status(400).send('Tous les champs sont requis.');
     }
+    if (annotations.hasOwnProperty(annotationURI)) {
+        return res.status(409).send('Une annotation avec cet URI existe déjà.');
+    }
     annotations[annotationURI] = { resourceURI, content, format };
     res.status(201).send('Annotation créée avec succès.');
-});
+  });
+  
 
 // Route pour récupérer une annotation
 app.get('/annotations/:annotationURI', (req, res) => {

@@ -84,15 +84,27 @@
       const content = document.getElementById('content').value;
       const format = document.getElementById('format').value;
 
-      // Envoi de la requête pour créer une annotation
-      await fetch('/annotations', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ annotationURI, resourceURI, content, format }),
-      });
+      // Récupérer les annotations actuelles
+      const response = await fetch('/annotations');
+      const annotations = await response.json();
+
+      // Vérifier si l'annotationURI existe déjà
+      const existingAnnotation = annotations.find(a => a.annotationURI === annotationURI);
+
+      if (existingAnnotation) {
+        // Si l'annotationURI existe déjà, afficher une alerte
+        alert("L'annotation existe déjà !");
+      } else {
+        // Envoi de la requête pour créer une annotation
+        await fetch('/annotations', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ annotationURI, resourceURI, content, format }),
+        });
 
       // Actualisation des annotations
       displayAnnotations();
+      }
     });
 
     // Bouton pour actualiser les annotations
