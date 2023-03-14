@@ -1,68 +1,73 @@
 <!DOCTYPE html>
-<html>
-  <head>
+<html lang="fr">
+<head>
     <meta charset="UTF-8">
-    <title>Formulaire d'annotations</title>
-    
-    <!-- Chargement de jQuery depuis un CDN -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    
-    <!-- Chargement des styles Bootstrap depuis un CDN -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    
-    <!-- Chargement du fichier Javascript Bootstrap depuis un CDN -->
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
-    <!-- Définition des styles CSS personnalisés -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client API Annotations</title>
     <style>
-      body {
-        margin: 20px;
-      }
-      
-      form {
-        margin-left: 20px;
-        margin-right: 970px;
-      }
-      
-      .form-group {
-        margin-bottom: 20px;
-      }
+        /* Ajoutez vos styles CSS ici */
     </style>
-
-  </head>
-  <body>
-    <!-- Titre du formulaire -->
-    <h1>Créer une nouvelle annotation</h1>
-    
-    <!-- Formulaire pour créer une nouvelle annotation -->
-    <form class="my-4" id="myForm">
-      
-      <!-- Champ de saisie pour le titre de l'annotation -->
-      <div class="form-group">
-        <label for="title">Titre :</label>
-        <input type="text" class="form-control" id="title" name="title"><br><br>
-      </div>
-      
-      <!-- Champ de saisie pour le contenu de l'annotation -->
-      <div class="form-group">
-        <label for="content">Contenu :</label>
-        <textarea class="form-control" id="content" name="content"></textarea><br><br>
-      </div>
-      
-      <!-- Liste déroulante pour sélectionner le format de l'annotation -->
-      <div class="form-group">
-        <label for="format">Format :</label>
-        <select class="form-control" id="format" name="format">
-          <option value="text">Texte brut</option>
-          <option value="html">HTML</option>
-          <option value="markdown">Markdown</option>
-          <option value="json">JSON</option>
-        </select><br><br>
-      </div>
-        
-      <!-- Bouton pour soumettre le formulaire -->
-      <button type="submit" class="btn btn-primary">Créer</button>
+</head>
+<body>
+    <!-- Formulaire pour créer une annotation -->
+    <h2>Créer une annotation</h2>
+    <form id="create-annotation-form">
+        <label for="annotationURI">URI de l'annotation:</label>
+        <input type="text" id="annotationURI" required><br>
+        <label for="resourceURI">URI de la ressource:</label>
+        <input type="text" id="resourceURI" required><br>
+        <label for="content">Contenu:</label>
+        <textarea id="content" required></textarea><br>
+        <label for="format">Format:</label>
+        <select id="format" required>
+            <option value="html">HTML</option>
+            <option value="javascript">JavaScript</option>
+        </select><br>
+        <button type="submit">Créer</button>
     </form>
-  </body>
-  
+
+    <!-- Section pour afficher les annotations -->
+    <h2>Annotations</h2>
+    <pre id="annotations-output"></pre>
+    <button id="refresh-annotations">Actualiser les annotations</button>
+
+    <script>
+        // Élément DOM pour afficher les annotations
+        const annotationsOutput = document.getElementById('annotations-output');
+
+        // Fonction pour afficher les annotations
+        async function displayAnnotations() {
+            const response = await fetch('/annotations');
+            const annotations = await response.json();
+            annotationsOutput.textContent = JSON.stringify(annotations, null, 2);
+        }
+
+        // Actualiser les annotations lors du chargement de la page
+        displayAnnotations();
+
+        // Formulaire pour créer une annotation
+        const createAnnotationForm = document.getElementById('create-annotation-form');
+        createAnnotationForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const annotationURI = document.getElementById('annotationURI').value;
+            const resourceURI = document.getElementById('resourceURI').value;
+            const content = document.getElementById('content').value;
+            const format = document.getElementById('format').value;
+
+            // Envoi de la requête pour créer une annotation
+            await fetch('/annotations', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ annotationURI, resourceURI, content, format }),
+            });
+
+            // Actualisation des annotations
+            displayAnnotations();
+        });
+
+        // Bouton pour actualiser les annotations
+        const refreshAnnotationsButton = document.getElementById('refresh-annotations');
+        refreshAnnotationsButton.addEventListener('click', displayAnnotations);
+    </script>
+</body>
 </html>
