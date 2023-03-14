@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,6 +9,7 @@
     /* Styles CSS */
   </style>
 </head>
+
 <body>
   <!-- Formulaire pour créer une annotation -->
   <h2>Créer une annotation</h2>
@@ -45,10 +47,28 @@
       // Récupérer et afficher les annotations actualisées
       const response = await fetch('/annotations');
       const annotations = await response.json();
-      annotations.forEach(annotation => {
-        const pre = document.createElement('pre');
-        pre.textContent = JSON.stringify(annotation, null, 2);
-        annotationsOutput.appendChild(pre);
+      annotations.forEach(({ annotationURI, resourceURI, content, format }) => {
+        // Créer un élément pour afficher l'annotationURI
+        const annotationURIElem = document.createElement('h3');
+        annotationURIElem.textContent = `Annotation URI: ${annotationURI}`;
+
+        // Créer un élément pour afficher l'annotation en fonction du format
+        let annotationElem;
+        if (format === 'javascript') {
+          annotationElem = document.createElement('pre');
+          annotationElem.textContent = JSON.stringify({ resourceURI, content, format }, null, 2);
+        } else {
+          annotationElem = document.createElement('div');
+          annotationElem.innerHTML = `
+            <p><strong>Resource URI:</strong> ${resourceURI}</p>
+            <p><strong>Content:</strong> ${content}</p>
+            <p><strong>Format:</strong> ${format}</p>
+          `;
+        }
+
+        // Ajouter les éléments à la section d'affichage
+        annotationsOutput.appendChild(annotationURIElem);
+        annotationsOutput.appendChild(annotationElem);
       });
     }
 
@@ -87,4 +107,5 @@
 
   </script>
 </body>
+
 </html>
