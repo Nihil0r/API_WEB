@@ -1,85 +1,90 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Client API Annotations</title>
-    <style>
-        /* Ajoutez vos styles CSS ici */
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Client API Annotations</title>
+  <style>
+    /* Styles CSS */
+  </style>
 </head>
 <body>
-    <!-- Formulaire pour créer une annotation -->
-    <h2>Créer une annotation</h2>
-    <form id="create-annotation-form">
-        <label for="annotationURI">URI de l'annotation:</label>
-        <input type="text" id="annotationURI" required><br>
-        <label for="resourceURI">URI de la ressource:</label>
-        <input type="text" id="resourceURI" required><br>
-        <label for="content">Contenu:</label>
-        <textarea id="content" required></textarea><br>
-        <label for="format">Format:</label>
-        <select id="format" required>
-            <option value="html">HTML</option>
-            <option value="javascript">JavaScript</option>
-        </select><br>
-        <button type="submit">Créer</button>
-    </form>
+  <!-- Formulaire pour créer une annotation -->
+  <h2>Créer une annotation</h2>
+  <form id="create-annotation-form">
+    <label for="annotationURI">URI de l'annotation:</label>
+    <input type="text" id="annotationURI" required><br>
+    <label for="resourceURI">URI de la ressource annotée:</label>
+    <input type="text" id="resourceURI" required><br>
+    <label for="content">Contenu:</label>
+    <textarea id="content" required></textarea><br>
+    <label for="format">Format:</label>
+    <select id="format" required>
+      <option value="html">HTML</option>
+      <option value="javascript">JavaScript</option>
+    </select><br>
+    <button type="submit">Créer</button>
+  </form>
 
-    <!-- Section pour afficher les annotations -->
-    <h2>Annotations</h2>
-    <pre id="annotations-output"></pre>
-    <button id="refresh-annotations">Actualiser les annotations</button>
-    <button id="clear-annotations">Effacer les annotations</button>
+  <!-- Section pour afficher les annotations -->
+  <h2>Annotations</h2>
+  <pre id="annotations-output"></pre>
+  <button id="refresh-annotations">Actualiser les annotations</button>
+  <button id="clear-annotations">Effacer les annotations</button>
 
-    <script>
-        // Élément DOM pour afficher les annotations
-        const annotationsOutput = document.getElementById('annotations-output');
+  <script>
+    // Élément DOM pour afficher les annotations
+    const annotationsOutput = document.getElementById('annotations-output');
 
-        // Fonction pour afficher les annotations
-        async function displayAnnotations() {
-            const response = await fetch('/annotations');
-            const annotations = await response.json();
-            annotations.forEach(annotation => {
-                const pre = document.createElement('pre');
-                pre.textContent = JSON.stringify(annotation, null, 2);
-                annotationsOutput.appendChild(pre);
-            });
-        }
+    // Fonction pour afficher les annotations
+    async function displayAnnotations() {
 
-        // Actualiser les annotations lors du chargement de la page
-        displayAnnotations();
+      // Effacer l'affichage des annotations
+      annotationsOutput.innerHTML = '';
 
-        // Formulaire pour créer une annotation
-        const createAnnotationForm = document.getElementById('create-annotation-form');
-        createAnnotationForm.addEventListener('submit', async (event) => {
-            event.preventDefault();
-            const annotationURI = document.getElementById('annotationURI').value;
-            const resourceURI = document.getElementById('resourceURI').value;
-            const content = document.getElementById('content').value;
-            const format = document.getElementById('format').value;
+      // Récupérer et afficher les annotations actualisées
+      const response = await fetch('/annotations');
+      const annotations = await response.json();
+      annotations.forEach(annotation => {
+        const pre = document.createElement('pre');
+        pre.textContent = JSON.stringify(annotation, null, 2);
+        annotationsOutput.appendChild(pre);
+      });
+    }
 
-            // Envoi de la requête pour créer une annotation
-            await fetch('/annotations', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ annotationURI, resourceURI, content, format }),
-            });
+    // Actualiser les annotations lors du chargement de la page
+    displayAnnotations();
 
-            // Actualisation des annotations
-            displayAnnotations();
-        });
+    // Formulaire pour créer une annotation
+    const createAnnotationForm = document.getElementById('create-annotation-form');
+    createAnnotationForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const annotationURI = document.getElementById('annotationURI').value;
+      const resourceURI = document.getElementById('resourceURI').value;
+      const content = document.getElementById('content').value;
+      const format = document.getElementById('format').value;
 
-        // Bouton pour actualiser les annotations
-        const refreshAnnotationsButton = document.getElementById('refresh-annotations');
-        refreshAnnotationsButton.addEventListener('click', displayAnnotations);
+      // Envoi de la requête pour créer une annotation
+      await fetch('/annotations', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ annotationURI, resourceURI, content, format }),
+      });
 
-        // Bouton pour effacer les annotations
-        const clearAnnotationsButton = document.getElementById('clear-annotations');
-        clearAnnotationsButton.addEventListener('click', () => {
-            annotationsOutput.innerHTML = '';
-        });
-        
-    </script>
+      // Actualisation des annotations
+      displayAnnotations();
+    });
+
+    // Bouton pour actualiser les annotations
+    const refreshAnnotationsButton = document.getElementById('refresh-annotations');
+    refreshAnnotationsButton.addEventListener('click', displayAnnotations);
+
+    // Bouton pour effacer les annotations
+    const clearAnnotationsButton = document.getElementById('clear-annotations');
+    clearAnnotationsButton.addEventListener('click', () => {
+      annotationsOutput.innerHTML = '';
+    });
+
+  </script>
 </body>
 </html>
