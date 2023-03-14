@@ -1,44 +1,49 @@
-// var express = require('express');
-// var app = express();
-
-// const port = process.env.PORT || 3000;
-
-// app.get("/toto", function(req,res){ 
-//     res.send("Salut toto")
-// } );
-
-// app.listen(port, function(){
-//     console.log('Serveur listening on port : ' + port); 
-// });
-
-
-
 const express = require('express');
-const path = require('path'); // module pour manipuler les chemins de fichiers
+const bodyParser = require('body-parser');
+const uuid = require('uuid');
 
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Middleware pour parser les données POST du formulaire
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+// Initialisation de la liste d'annotations
+const annotations = [];
 
-// Route pour servir le fichier client.html
-app.get('/', function(req, res) {
-    res.sendFile(path.join(__dirname, 'client.html'));
+// Parser les données POST envoyées par le formulaire
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
+// Route pour récupérer la liste d'annotations
+app.get('/annotations', (req, res) => {
+  res.json(annotations);
 });
 
-// Route pour recevoir les données du formulaire en méthode POST
-app.post('/annotation', function(req, res) {
-    const newAnnotation = {
-        title: req.body.title,
-        content: req.body.content,
-        format: req.body.format
-    };
-    // Code pour ajouter la nouvelle annotation dans la liste des annotations
-    // à écrire selon comment cette liste est implémentée
+// Route pour créer une nouvelle annotation
+app.post('/annotations', (req, res) => {
+  // Générer un nouvel identifiant unique
+  const uri = uuid.v4();
+
+  // Récupérer les données du formulaire
+  const title = req.body.title;
+  const content = req.body.content;
+  const format = req.body.format;
+
+  // Créer une nouvelle annotation
+  const annotation = {
+    uri,
+    title,
+    content,
+    format,
+    created_at: new Date()
+  };
+
+  // Ajouter l'annotation à la liste
+  annotations.push(annotation);
+
+  // Retourner la nouvelle annotation
+  res.json(annotation);
 });
 
-app.listen(port, function() {
-    console.log('Serveur listening on port : ' + port);
+// Lancement du serveur
+app.listen(port, () => {
+  console.log(`Serveur démarré sur le port ${port}`);
 });
