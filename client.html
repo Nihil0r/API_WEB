@@ -3,15 +3,17 @@
   <head>
     <meta charset="UTF-8">
     <title>Formulaire d'annotations</title>
+    
+    <!-- Chargement de jQuery depuis un CDN -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     
-    <!-- <link rel="stylesheet" href="C:/Users/brice/OneDrive/Bureau/MIASHS/M1/S2/web/API_WEB/bootstrap-5.0.2-dist/css/bootstrap.min.css">
-    <script src="C:/Users/brice/OneDrive/Bureau/MIASHS/M1/S2/web/API_WEB/bootstrap-5.0.2-dist/js/bootstrap.min.js"></script> -->
-
+    <!-- Chargement des styles Bootstrap depuis un CDN -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    
+    <!-- Chargement du fichier Javascript Bootstrap depuis un CDN -->
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-
+    <!-- Définition des styles CSS personnalisés -->
     <style>
       body {
         margin: 20px;
@@ -29,19 +31,25 @@
 
   </head>
   <body>
+    <!-- Titre du formulaire -->
     <h1>Créer une nouvelle annotation</h1>
     
+    <!-- Formulaire pour créer une nouvelle annotation -->
     <form class="my-4" id="myForm">
+      
+      <!-- Champ de saisie pour le titre de l'annotation -->
       <div class="form-group">
         <label for="title">Titre :</label>
         <input type="text" class="form-control" id="title" name="title"><br><br>
       </div>
       
+      <!-- Champ de saisie pour le contenu de l'annotation -->
       <div class="form-group">
         <label for="content">Contenu :</label>
         <textarea class="form-control" id="content" name="content"></textarea><br><br>
       </div>
       
+      <!-- Liste déroulante pour sélectionner le format de l'annotation -->
       <div class="form-group">
         <label for="format">Format :</label>
         <select class="form-control" id="format" name="format">
@@ -52,6 +60,7 @@
         </select><br><br>
       </div>
         
+      <!-- Bouton pour soumettre le formulaire -->
       <button type="submit" class="btn btn-primary">Créer</button>
     </form>
   </body>
