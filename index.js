@@ -43,6 +43,12 @@ app.post('/annotations', (req, res) => {
   res.json(annotation);
 });
 
+
+// Route pour servir la page HTML
+app.get('/', (req, res) => {
+    res.sendFile(__dirname + '/client.html');
+});
+
 // Lancement du serveur
 app.listen(port, () => {
   console.log(`Serveur démarré sur le port ${port}`);
