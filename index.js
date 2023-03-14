@@ -19,7 +19,7 @@ app.get('/annotations', (req, res) => {
 
 // Route pour créer une nouvelle annotation
 app.post('/annotations', (req, res) => {
-  // Générer un nouvel identifiant unique
+  // Générer une nouvelle uri unique
   const uri = uuid.v4();
 
   // Récupérer les données du formulaire
