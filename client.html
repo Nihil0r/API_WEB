@@ -38,6 +38,14 @@
     <button type="submit">Récupérer</button>
   </form>
 
+  <!-- Formulaire pour récupérer toutes les annotations avec une URI de ressource identique -->
+  <h2>Récupérer les annotations par URI de ressource</h2>
+  <form id="get-resource-annotations-form">
+    <label for="get-resourceURI">URI de la ressource:</label>
+    <input type="text" id="get-resourceURI" required><br>
+    <button type="submit">Récupérer</button>
+  </form>
+
   <!-- Section pour afficher les annotations -->
   <h2>Annotations</h2>
   <pre id="annotations-output"></pre>
@@ -170,6 +178,54 @@
       annotationsOutput.appendChild(annotationURIElem);
       annotationsOutput.appendChild(annotationElem);
     };
+
+    // Formulaire pour récupérer toutes les annotations avec une URI de ressource identique
+    const getResourceAnnotationsForm = document.getElementById('get-resource-annotations-form');
+
+    getResourceAnnotationsForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const resourceURI = document.getElementById('get-resourceURI').value;
+
+      // Envoyer une requête pour récupérer toutes les annotations ayant une URI de ressource identique
+      const response = await fetch(`/annotations?resourceURI=${resourceURI}`);
+      const annotations = await response.json();
+
+      // Effacer l'affichage des annotations
+      annotationsOutput.innerHTML = '';
+
+      // Vérifier si des annotations ont été trouvées
+      if (annotations.length > 0) {
+        annotations.forEach(({ annotationURI, resourceURI, content, format }) => {
+          // Créer un élément pour afficher l'annotationURI
+          const annotationURIElem = document.createElement('h3');
+          annotationURIElem.textContent = `Annotation URI: ${annotationURI}`;
+
+          // Créer un élément pour afficher l'annotation en fonction du format
+          let annotationElem;
+          if (format === 'javascript') {
+            annotationElem = document.createElement('pre');
+            annotationElem.textContent = JSON.stringify({ resourceURI, content, format }, null, 2);
+          } else {
+            annotationElem = document.createElement('div');
+            annotationElem.innerHTML = `
+              <p><strong>Resource URI:</strong> ${resourceURI}</p>
+              <p><strong>Content:</strong> ${content}</p>
+              <p><strong>Format:</strong> ${format}</p>
+            `;
+          }
+
+          // Ajouter les éléments à la section d'affichage
+          annotationsOutput.appendChild(annotationURIElem);
+          annotationsOutput.appendChild(annotationElem);
+        });
+      } else {
+        alert("Aucune annotation trouvée pour cette URI de ressource !");
+      }
+
+      // Réinitialiser le formulaire
+      getResourceAnnotationsForm.reset();
+    });
+
     
     // Bouton pour actualiser les annotations
     const refreshAnnotationsButton = document.getElementById('refresh-annotations');
