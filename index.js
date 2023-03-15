@@ -38,9 +38,11 @@ app.get('/annotations/:annotationURI', (req, res) => {
 app.get('/annotations', (req, res) => {
     const resourceURI = req.query.resourceURI;
     if (resourceURI) {
-        const resourceAnnotations = Object.values(annotations).filter(
-            (annotation) => annotation.resourceURI === resourceURI
-        );
+        const resourceAnnotations = Object.entries(annotations)
+            .filter(([annotationURI, annotation]) => annotation.resourceURI === resourceURI)
+            .map(([annotationURI, annotation]) => {
+                return { annotationURI, ...annotation };
+            });
         res.json(resourceAnnotations);
     } else {
         const annotationsArray = Object.entries(annotations).map(([annotationURI, annotation]) => {
@@ -49,6 +51,7 @@ app.get('/annotations', (req, res) => {
         res.json(annotationsArray);
     }
 });
+
 
 
 // Route pour récupérer toutes les annotations de notre serveur
