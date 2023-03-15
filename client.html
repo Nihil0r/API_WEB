@@ -135,7 +135,7 @@
         // Sinon, récupérer l'annotation et l'afficher
         const annotation = await response.json();
         annotationsOutput.innerHTML = '';
-        displaySingleAnnotation(annotationURI, annotation);
+        displaySingleAnnotation(getAnnotationURI.value, annotation);
       }
 
       // Réinitialiser le formulaire
@@ -144,7 +144,7 @@
     });
 
     // Fonction pour afficher une annotation spécifique
-    function displaySingleAnnotation(annotation) {
+    function displaySingleAnnotation(annotationURI, annotation) {
       // Extraire les propriétés de l'annotation
       const { resourceURI, content, format } = annotation;
 
