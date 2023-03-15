@@ -29,28 +29,54 @@ app.get('/annotations/:annotationURI', (req, res) => {
     const annotationURI = req.params.annotationURI;
     const annotation = annotations[annotationURI];
     if (!annotation) {
-        return res.status(404).send('Annotation introuvable.');
+      return res.status(404).send('Annotation introuvable.');
     }
-    res.json(annotation);
+  
+    // Ajout de la négociation de contenu
+    const accept = req.header('Accept');
+    if (accept === 'text/html') {
+      res.send(`
+        <p><strong>Resource URI:</strong> ${annotation.resourceURI}</p>
+        <p><strong>Content:</strong> ${annotation.content}</p>
+        <p><strong>Format:</strong> ${annotation.format}</p>
+      `);
+    } else {
+      res.json(annotation);
+    }
 });
 
 // Route pour récupérer toutes les annotations portant sur une ressource
 app.get('/annotations', (req, res) => {
     const resourceURI = req.query.resourceURI;
+    let resourceAnnotations;
     if (resourceURI) {
-        const resourceAnnotations = Object.entries(annotations)
-            .filter(([annotationURI, annotation]) => annotation.resourceURI === resourceURI)
-            .map(([annotationURI, annotation]) => {
-                return { annotationURI, ...annotation };
-            });
-        res.json(resourceAnnotations);
-    } else {
-        const annotationsArray = Object.entries(annotations).map(([annotationURI, annotation]) => {
-            return { annotationURI, ...annotation };
+      resourceAnnotations = Object.entries(annotations)
+        .filter(([annotationURI, annotation]) => annotation.resourceURI === resourceURI)
+        .map(([annotationURI, annotation]) => {
+          return { annotationURI, ...annotation };
         });
-        res.json(annotationsArray);
+    } else {
+      resourceAnnotations = Object.entries(annotations).map(([annotationURI, annotation]) => {
+        return { annotationURI, ...annotation };
+      });
     }
-});
+  
+    // Ajout de la négociation de contenu
+    const accept = req.header('Accept');
+    if (accept === 'text/html') {
+      const htmlResponse = resourceAnnotations.map(({ annotationURI, resourceURI, content, format }) => {
+        return `
+          <h3>Annotation URI: ${annotationURI}</h3>
+          <p><strong>Resource URI:</strong> ${resourceURI}</p>
+          <p><strong>Content:</strong> ${content}</p>
+          <p><strong>Format:</strong> ${format}</p>
+        `;
+      }).join('');
+      res.send(htmlResponse);
+    } else {
+      res.json(resourceAnnotations);
+    }
+  });
 
 
 

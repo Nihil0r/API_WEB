@@ -34,6 +34,12 @@
     <!-- Input pour l'annotationURI -->
     <label for="get-annotationURI">URI de l'annotation:</label>
     <input type="text" id="get-annotationURI" required><br>
+    <!-- Ajout de l'élément select pour choisir le format -->
+    <label for="get-annotation-format">Format:</label>
+    <select id="get-annotation-format" required>
+      <option value="html">HTML</option>
+      <option value="json">JSON</option>
+    </select><br>
     <!-- Bouton pour soumettre le formulaire -->
     <button type="submit">Récupérer</button>
   </form>
@@ -41,8 +47,16 @@
   <!-- Formulaire pour récupérer toutes les annotations avec une URI de ressource identique -->
   <h2>Récupérer les annotations par URI de ressource</h2>
   <form id="get-resource-annotations-form">
+    <!-- Input pour l'annotationURI -->
     <label for="get-resourceURI">URI de la ressource:</label>
     <input type="text" id="get-resourceURI" required><br>
+    <!-- Ajout de l'élément select pour choisir le format -->
+    <label for="get-resource-annotations-format">Format:</label>
+    <select id="get-resource-annotations-format" required>
+      <option value="html">HTML</option>
+      <option value="json">JSON</option>
+    </select><br>
+    <!-- Bouton pour soumettre le formulaire -->
     <button type="submit">Récupérer</button>
   </form>
 
@@ -134,7 +148,10 @@
       const annotationURI = document.getElementById('get-annotationURI').value;
 
       // Envoyer une requête pour récupérer une annotation spécifique
-      const response = await fetch(`/annotations/${annotationURI}`);
+      const format = document.getElementById('get-annotation-format').value;
+      const response = await fetch(`/annotations/${annotationURI}`, {
+        headers: { 'Accept': format === 'json' ? 'application/json' : 'text/html' },
+      });
       
       // Si l'annotation n'a pas été trouvée, afficher une alerte
       if (response.status === 404) {
@@ -187,8 +204,10 @@
       const resourceURI = document.getElementById('get-resourceURI').value;
 
       // Envoyer une requête pour récupérer toutes les annotations ayant une URI de ressource identique
-      const response = await fetch(`/annotations?resourceURI=${resourceURI}`);
-      const annotations = await response.json();
+      const format = document.getElementById('get-resource-annotations-format').value;
+      const response = await fetch(`/annotations?resourceURI=${resourceURI}`, {
+        headers: { 'Accept': format === 'json' ? 'application/json' : 'text/html' },
+      });
 
       // Effacer l'affichage des annotations
       annotationsOutput.innerHTML = '';
