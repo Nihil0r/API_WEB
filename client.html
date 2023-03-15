@@ -28,11 +28,21 @@
     <button type="submit">Créer</button>
   </form>
 
+  <!-- Formulaire pour récupérer une annotation spécifique -->
+  <h2>Récupérer une annotation</h2>
+  <form id="get-annotation-form">
+    <!-- Input pour l'annotationURI -->
+    <label for="get-annotationURI">URI de l'annotation:</label>
+    <input type="text" id="get-annotationURI" required><br>
+    <!-- Bouton pour soumettre le formulaire -->
+    <button type="submit">Récupérer</button>
+  </form>
+
   <!-- Section pour afficher les annotations -->
   <h2>Annotations</h2>
   <pre id="annotations-output"></pre>
   <button id="refresh-annotations">Actualiser les annotations</button>
-  <button id="clear-annotations">Effacer les annotations</button>
+  <button id="clear-annotations">Effacer l'affichage des annotations</button>
 
   <script>
     // Élément DOM pour afficher les annotations
@@ -107,6 +117,60 @@
       }
     });
 
+    // Formulaire pour récupérer une annotation spécifique
+    const getAnnotationForm = document.getElementById('get-annotation-form');
+
+    // Écouteur d'événements 'submit' pour le formulaire de récupération d'annotation
+    getAnnotationForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const annotationURI = document.getElementById('get-annotationURI').value;
+
+      // Envoyer une requête pour récupérer une annotation spécifique
+      const response = await fetch(`/annotations/${annotationURI}`);
+      
+      // Si l'annotation n'a pas été trouvée, afficher une alerte
+      if (response.status === 404) {
+        alert("L'annotation n'a pas été trouvée !");
+      } else {
+        // Sinon, récupérer l'annotation et l'afficher
+        const annotation = await response.json();
+        annotationsOutput.innerHTML = '';
+        displaySingleAnnotation(annotation);
+      }
+
+      // Réinitialiser le formulaire
+      getAnnotationForm.reset();
+      
+    });
+
+    // Fonction pour afficher une annotation spécifique
+    function displaySingleAnnotation(annotation) {
+      // Extraire les propriétés de l'annotation
+      const { annotationURI, resourceURI, content, format } = annotation;
+
+      // Créer un élément pour afficher l'annotationURI
+      const annotationURIElem = document.createElement('h3');
+      annotationURIElem.textContent = `Annotation URI: ${annotationURI}`;
+
+      // Créer un élément pour afficher l'annotation en fonction du format
+      let annotationElem;
+      if (format === 'javascript') {
+        annotationElem = document.createElement('pre');
+        annotationElem.textContent = JSON.stringify({ resourceURI, content, format }, null, 2);
+      } else {
+        annotationElem = document.createElement('div');
+        annotationElem.innerHTML = `
+          <p><strong>Resource URI:</strong> ${resourceURI}</p>
+          <p><strong>Content:</strong> ${content}</p>
+          <p><strong>Format:</strong> ${format}</p>
+        `;
+      }
+
+      // Ajouter les éléments à la section d'affichage
+      annotationsOutput.appendChild(annotationURIElem);
+      annotationsOutput.appendChild(annotationElem);
+    };
+    
     // Bouton pour actualiser les annotations
     const refreshAnnotationsButton = document.getElementById('refresh-annotations');
     refreshAnnotationsButton.addEventListener('click', displayAnnotations);
